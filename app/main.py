@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 
-from .routers import users
-from .db.session import SessionLocal
+from app.routers import users
+from app.db.session import SessionLocal
+from app.db.session import engine
+from app.db.base import Base
+from app.models import *
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 app.include_router(users.router)
 
