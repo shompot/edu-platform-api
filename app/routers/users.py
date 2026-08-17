@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.user import *
 from app.models import User
+from app.services.security import hash_password
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ async def test():
 async def register(user: UserCreate, db: Session = Depends(get_db)):
     new_user = User(
         email = user.email,
-        password = user.password
+        password = hash_password(user.password)
     )
     
     db.add(new_user)
