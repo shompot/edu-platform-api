@@ -14,7 +14,7 @@ router = APIRouter()
 async def test():
     return{"messase": "user router works"}
     
-@router.post("/register")
+@router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
     new_user = User(
         email = user.email,
