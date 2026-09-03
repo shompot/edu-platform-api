@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.schemas.user import *
 from app.models import User
 from app.services.security import hash_password
+from app.services.security import verify_password
 
 router = APIRouter()
 
@@ -30,7 +31,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 async def login(user: UserLogin, db: Session = Depends(get_db)):
     user_check = db.query(User).filter(User.email == user.email).first()
     if user_check:
-        if user.password == user_check.password:
+        if verify_password(user.password, user_check.password):
             return {"message": "login successful"}
         else:
             return{"message": "invalid password"}
