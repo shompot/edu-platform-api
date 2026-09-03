@@ -16,7 +16,11 @@ router = APIRouter()
 async def test():
     return{"messase": "user router works"}
     
-@router.post("/register", response_model=UserResponse)
+@router.post(
+    "/register", 
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED
+    )
 async def register(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user.email).first()
 
@@ -40,11 +44,17 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 async def login(user: UserLogin, db: Session = Depends(get_db)):
     user_check = db.query(User).filter(User.email == user.email).first()
-    if user_check:
-        if verify_password(user.password, user_check.password):
-            return {"message": "login successful"}
-        else:
-            return{"message": "invalid password"}
-    else:
-        return{"message": "user not found"}
+    if not user_check:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+    
+    if not verify_password(user.password, user_check.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )    
+
+    return{"message": "login successful"}
     
