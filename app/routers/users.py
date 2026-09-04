@@ -5,17 +5,15 @@ from fastapi import status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.schemas.user import *
+from app.schemas.user import UserCreate
+from app.schemas.user import UserLogin
+from app.schemas.user import UserResponse
 from app.models import User
 from app.services.security import hash_password
 from app.services.security import verify_password
 
 router = APIRouter()
 
-@router.get("/test")
-async def test():
-    return{"messase": "user router works"}
-    
 @router.post(
     "/register", 
     response_model=UserResponse,
@@ -31,8 +29,8 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         )
         
     new_user = User(
-        email = user.email,
-        password = hash_password(user.password)
+        email=user.email,
+        password=hash_password(user.password)
     )
     
     db.add(new_user)
