@@ -56,5 +56,5 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
             detail="Invalid credentials"
         )    
 
-    return{"message": "login successful"}
+    return{"message": "Login successful"}
     
