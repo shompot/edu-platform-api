@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 
 from app.routers import users
-from app.db.session import SessionLocal
 from app.db.session import engine
 from app.db.base import Base
-from app.models import *
+from app.models import User
 
 app = FastAPI()
 
@@ -14,4 +13,4 @@ app.include_router(users.router)
 
 @app.get("/")
 async def root():
-    return{"message":"Hello, World!"}
+    return {"message": "Hello, World!"}
