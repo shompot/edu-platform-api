@@ -80,3 +80,21 @@ def test_login_nonexistent_user(client):
     
     assert login_response.status_code == 401
     assert login_response.json()["detail"] == "Invalid credentials"
+    
+def test_register_invalid_email(client):
+    payload = {
+        "email": "not-an-email",
+        "password": "test1234"
+    }
+    response = client.post("/register", json=payload)
+    
+    assert response.status_code == 422
+
+def test_register_short_password(client):
+    payload = {
+        "email": "valid@example.com",
+        "password": "short"
+    }
+    response = client.post("/register", json=payload)
+    
+    assert response.status_code == 422
