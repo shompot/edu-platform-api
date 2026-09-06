@@ -14,8 +14,12 @@ load_dotenv()
 
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
+if not TEST_DATABASE_URL:
+    raise RuntimeError("TEST_DATABASE_URL environment variable is not set")
+
 test_engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(bind=test_engine)
+
 
 def override_get_db():
     db = TestingSessionLocal()
@@ -26,9 +30,11 @@ def override_get_db():
         
 app.dependency_overrides[get_db] = override_get_db
 
+
 @pytest.fixture
 def client():
     return TestClient(app)
+
 
 @pytest.fixture(autouse=True)
 def clean_database():
